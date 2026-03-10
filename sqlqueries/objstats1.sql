@@ -1,7 +1,10 @@
 -- Member: OBJSTATS1.SQL
--- List All Objects and Fields in selected library along with core object info
+-- List All Objects and Fields in selected library along with core object info.
 -- Note: There is a commented out filter that can be used to filter on last used date.
--- Use this SQL query via the QSHONI/QSHQRYTMP and the soft coded @@LIBRARY parameter
+-- Use this SQL query via the QSHONI/QSHQRYSRC command and the soft coded @@LIBRARY parameter
+-- to create an OUTFILE of source info.
+-- This query can be stored as a source physical file member or as an IFS file depending
+-- how you want to store your SQL.
 WITH LIB_OBJECTS AS
 (
 SELECT 
