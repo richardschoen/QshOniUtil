@@ -43,5 +43,6 @@ You can enter or upload these source members using VS Code, RDI or an other IBM 
 ```GENXLSACS``` - Generate Excel File Using IBM ACS Jar File   
 Not much to say about this one other than it wraps around the ACS functionality. It was based on a utility created by Scott Schollenberger he posted over on the IBM TechXchange forum. Thanks for the inspiration Scott.    
 Compile the CL command associated CL program and make sure QSHONI is available on your system. 
+https://github.com/richardschoen/QshOniUtil/tree/main/GenerateExcelWithAcs   
 
 
