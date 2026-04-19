@@ -2,8 +2,8 @@
 This repository if meant for miscellaneous add-on utilitites that utilize the QShell on i library (QSHONI)    
 
 ## Recommended location for these commands is:
-Source Library: ```QSHONIUTIL```
-Source File: ``SOURCE```
+Source Library: ```QSHONIUTIL```  
+Source File: ```SOURCE```  
 
 However you can really put these anywhere. They just need the QSHONI library from the link below before they will run.  
 
