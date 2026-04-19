@@ -1,10 +1,12 @@
 # IBM i Utilities Based on QShell on i (QSHONI) Library
-This repository is meant for miscellaneous add-on utilitites that utilize the QShell on i library (QSHONI)    
+This repository is meant for miscellaneous add-on utilitites that utilize the QShell on i library (QSHONI).   
+
+All utilities listed here are FREE to use. Sample commands and code contributions are also appreciated.    
 
 ## MobiConnect - Modernizing and Connecting IBM i to the World
 I am releasing a commercially supported product called MobiConnect. MobiConnect provides functionality for creating applications, integrations, REST services and connection points for Native IBM i, Windows, Linux and MacOS apps to other platforms and services. It contains a lot of functionality that is better suited for commercial support. And it uses some of the QSHONI functionality as well.  
 
-If you are creating IBM i applications and services that need to integrate with other platforms, reach out and and we can talk about your requirements. MobiConnect may just be the right ticket for interconnecting your IBM i RPG, COBOL and CL apps to the world of web apps, REST services and mobile with minimal effort.     
+If you are creating IBM i applications and services that need to integrate with other platforms or AI services, reach out and and we can talk about your requirements. MobiConnect may just be the right ticket for interconnecting your IBM i RPG, COBOL and CL apps to the world of web apps, REST services and mobile with minimal effort.     
 
 Visit the MobiGoGo web site or shoot me an email and talk to me about your IBM i connectivity and integration needs.   
 MobiGoGo: https://www.mobigogo.net    
