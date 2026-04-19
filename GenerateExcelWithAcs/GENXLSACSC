@@ -1,0 +1,142 @@
+/*------------------------------------------------------------*/
+/* @@LIBRARY: QSHONIUTIL                                      */
+/* @@FILE: SOURCE                                             */
+/* @@MEMBER: GENXLSACSC                                       */
+/* @@TYPE: CMD                                                */
+/* @@TEXT: Generate Excel File Using IBM ACS Jar File         */
+/*------------------------------------------------------------*/
+             PGM        PARM(&FULLFILE &TOXLSFILE &REPLACE +
+                          &LOGSTDOUT &PRTSTDOUT &JVMSEL)
+
+/* Define variables */
+             DCL        VAR(&JVMSEL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LOGSTDOUT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&PRTSTDOUT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&REPLACE) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&FULLFILE) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&TOXLSFILE) TYPE(*CHAR) LEN(255)
+             DCL        VAR(&IFILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&ILIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CLIENTFILE) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&HOSTFILE) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&QSHCMD) TYPE(*CHAR) LEN(5000)
+             DCL        VAR(&ACSJAR) TYPE(*CHAR) LEN(1024) +
+                          VALUE('/QIBM/proddata/Access/ACS/Base/acsbu+
+                          ndle.jar')
+             DCL        VAR(&JVM) TYPE(*CHAR) LEN(1024)
+             DCL        VAR(&JVM8032) TYPE(*CHAR) LEN(1024) +
+                          VALUE('/QOpenSys/QIBM/ProdData/JavaVM/jdk80+
+                          /32bit')
+             DCL        VAR(&JVM8064) TYPE(*CHAR) LEN(1024) +
+                          VALUE('/QOpenSys/QIBM/ProdData/JavaVM/jdk80+
+                          /64bit')
+             DCL        VAR(&JVM1164) TYPE(*CHAR) LEN(1024) +
+                          VALUE('/QOpenSys/QIBM/ProdData/JavaVM/jdk11+
+                          /64bit')
+             DCL        VAR(&JVM1764) TYPE(*CHAR) LEN(1024) +
+                          VALUE('/QOpenSys/QIBM/ProdData/JavaVM/jdk17+
+                          /64bit')
+
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERRORS))
+
+/* Parse database file name */
+             CHGVAR     VAR(&IFILE) VALUE(%SST(&FULLFILE 1 10))
+             CHGVAR     VAR(&ILIB) VALUE(%SST(&FULLFILE 11 10))
+
+/* Check for from database file */
+             CHKOBJ     OBJ(&ILIB/&IFILE) OBJTYPE(*FILE)
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('From +
+                          database file' |> &ILIB |< '/' |< &IFILE +
+                          |> 'not found or you do not have access +
+                          to it. Excel generation cancelled') +
+                          MSGTYPE(*ESCAPE)
+             ENDDO
+
+/* Check for output file */
+             QSHONI/QSHIFSCHK FILNAM(&TOXLSFILE)
+             /* File not found. Continue */
+             MONMSG     MSGID(CPF9898) EXEC(DO)
+             ENDDO
+             /* File found. Check for replace */
+             MONMSG     MSGID(CPF9897) EXEC(DO)
+             /* Erase existing file if replacing */
+             IF         COND(&REPLACE *EQ *YES) THEN(DO)
+             ERASE      OBJLNK(&TOXLSFILE)
+             ENDDO
+             /* Error if exists and not replacing */
+             IF         COND(&REPLACE *NE *YES) THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Output +
+                          Excel file' |> &TOXLSFILE |> 'exists and +
+                          replace not selected. Excel generation +
+                          cancelled') MSGTYPE(*ESCAPE)
+             ENDDO
+             ENDDO
+
+/* Make sure acsbundle.jar exists */
+             QSHONI/QSHIFSCHK FILNAM(&ACSJAR)
+             /* File not found. Continue */
+             MONMSG     MSGID(CPF9898) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('IBM +
+                          access file' |> &ACSJAR |> 'not found. +
+                          Excel generation cancelled') MSGTYPE(*ESCAPE)
+             ENDDO
+             /* File found. Continue          */
+             MONMSG     MSGID(CPF9897) EXEC(DO)
+             ENDDO
+
+/* Set java virtual machine version */
+             IF         COND(&JVMSEL *EQ '8032') THEN(DO)
+             CHGVAR     VAR(&JVM) VALUE(&JVM8032)
+             ENDDO
+             IF         COND(&JVMSEL *EQ '8064') THEN(DO)
+             CHGVAR     VAR(&JVM) VALUE(&JVM8064)
+             ENDDO
+             IF         COND(&JVMSEL *EQ '1164') THEN(DO)
+             CHGVAR     VAR(&JVM) VALUE(&JVM1164)
+             ENDDO
+             IF         COND(&JVMSEL *EQ '1764') THEN(DO)
+             CHGVAR     VAR(&JVM) VALUE(&JVM1764)
+             ENDDO
+             /* Bail if no JVM selected */
+             IF         COND(&JVM *EQ ' ') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('No java +
+                          virtual machine selected') MSGTYPE(*ESCAPE)
+             ENDDO
+
+/* Set java virtual machine version */
+             ADDENVVAR  ENVVAR(JAVA_HOME) VALUE(&JVM) +
+                          CCSID(*JOB) LEVEL(*JOB) REPLACE(*YES)
+
+/* Set output file path and source DB2 file */
+             CHGVAR     VAR(&CLIENTFILE) +
+                          VALUE('/clientfile=' |< &TOXLSFILE)
+             CHGVAR     VAR(&HOSTFILE) +
+                          VALUE('/hostfile=' |< &ILIB |< '/' |< &IFILE)
+
+/* Build the Java command */
+             CHGVAR     VAR(&QSHCMD) VALUE('java -jar' |> &ACSJAR |> +
+                          '/plugin=cldownload /system=localhost +
+                          /adjustcolumns /colheadings=1 +
+                          /usecollabels' |> &CLIENTFILE |> &HOSTFILE)
+
+/* Execute the command */
+             QSHONI/QSHEXEC CMDLINE(&QSHCMD) LOGSTDOUT(&LOGSTDOUT) +
+                          PRTSTDOUT(&PRTSTDOUT) PRTSPLF(GENXLSACS) +
+                          PRTTXT('Generate Excel Spreadsheet') +
+                          PRTHOLD(*YES)
+
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Excel +
+                          file' |> &TOXLSFILE |> 'generated from +
+                          database file' |> &ILIB |< '/' |< &IFILE) +
+                          MSGTYPE(*COMP)
+
+             RETURN
+
+/* Error handling */
+ERRORS:
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Excel +
+                          spreadsheet generation failed. Check the +
+                          logs') MSGTYPE(*ESCAPE)
+
+             ENDPGM
