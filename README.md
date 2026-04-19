@@ -22,12 +22,24 @@ Currently utilities placed here are source only.
 
 ❗These commands just need the QSHONI library from the link below before they will run.  
 
+## Creating QSHONIUTIL Library and Source File
+
+Create the QSHONIUTIL library
+```
+CRTLIB LIB(QSHONIUTL) TEXT('QShell on i Utilities') 
+```
+Create QSHONIUTIL source file
+```
+CRTSRCPF FILE(QSHONI/SOURCE) RCDLEN(120) TEXT('QSHONI Utility Source')
+```
+
 ## See the following link to get the QShell on i library 
 The QShell on IBM i library contains useful CL wrapper commands to allow QShell and PASE apps to be called and consumed from regular IBM i jobs via CL, RPG or COBOL programs.
 
 https://github.com/richardschoen/QshOni  
 
 ## Utility List
+You can enter or upload these source members using VS Code, RDI or an other IBM i source code utility application.   
 ```GENXLSACS``` - Generate Excel File Using IBM ACS Jar File   
 Not much to say about this one other than it wraps around the ACS functionality. It was based on a utility created by Scott Schollenberger he posted over on the IBM TechXchange forum. Thanks for the inspiration Scott.    
 Compile the CL command associated CL program and make sure QSHONI is available on your system. 
