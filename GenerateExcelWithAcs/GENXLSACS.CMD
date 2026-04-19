@@ -1,6 +1,6 @@
 /*------------------------------------------------------------*/
-/* @@LIBRARY: RJSDEVMB                                        */
-/* @@FILE: SRCQSH                                             */
+/* @@LIBRARY: QSHONIUTIL                                      */
+/* @@FILE: SOURCE                                             */
 /* @@MEMBER: GENXLSACS                                        */
 /* @@TYPE: CMD                                                */
 /* @@TEXT: Generate Excel File Using IBM ACS Jar File         */
