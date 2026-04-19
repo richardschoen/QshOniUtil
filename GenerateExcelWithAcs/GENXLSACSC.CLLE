@@ -126,6 +126,19 @@
                           PRTTXT('Generate Excel Spreadsheet') +
                           PRTHOLD(*YES)
 
+/* Check for output file */
+             QSHONI/QSHIFSCHK FILNAM(&TOXLSFILE)
+             /* File not found. Bail now */
+             MONMSG     MSGID(CPF9898) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Output +
+                          Excel file' |> &TOXLSFILE |> 'does not +
+                          exist. Excel generation failed. Possibly +
+                          an old ACS version') MSGTYPE(*ESCAPE)
+             ENDDO
+             /* File found. All good */
+             MONMSG     MSGID(CPF9897) EXEC(DO)
+             ENDDO
+
              SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Excel +
                           file' |> &TOXLSFILE |> 'generated from +
                           database file' |> &ILIB |< '/' |< &IFILE) +
