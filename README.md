@@ -1,5 +1,5 @@
 # IBM i Utilities Based on QShell on i (QSHONI) Library
-This repository if meant for miscellaneous add on utilitites that utilize the QShell on i library (QSHONI)    
+This repository if meant for miscellaneous add-on utilitites that utilize the QShell on i library (QSHONI)    
 
 ## Recommended location for these commands is:
 Source Library: QSHONIUTIL
