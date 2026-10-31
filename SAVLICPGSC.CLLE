@@ -1,0 +1,69 @@
+/* Desc: Restore Licensed Program from IFS Save File */
+             PGM        PARM(&LICPGM &OPTION &SAVTODIR)
+
+             DCL        VAR(&LICPGM) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&OPTION) TYPE(*CHAR) LEN(5)
+             DCL        VAR(&SAVTODIR) TYPE(*CHAR) LEN(255)
+             DCL        VAR(&IFSFILE) TYPE(*CHAR) LEN(255)
+             DCL        VAR(&SAVFNAME) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SAVF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(512)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERRORS))
+
+/* Create output IFS dir */
+             QSHONI/QSHIFSCHK FILNAM(&SAVTODIR)
+             /* Create output dir */
+             MONMSG     MSGID(CPF9898) EXEC(DO)
+             MKDIR      DIR(&SAVTODIR) DTAAUT(*RWX) OBJAUT(*ALL)
+             ENDDO
+             /* If found, ignore */
+             MONMSG     MSGID(CPF9897) EXEC(DO)
+             ENDDO
+
+/* Build save file names */
+             /* Base option */
+             IF         COND(&OPTION *EQ *BASE) THEN(DO)
+             CHGVAR     VAR(&SAVF) VALUE('Q' |< &LICPGM |< 'BS')
+             CHGVAR     VAR(&IFSFILE) VALUE(&SAVTODIR |< '/' |< +
+                          &SAVF |< '.savf')
+             ENDDO
+             /* Additional numeric option */
+             IF         COND(&OPTION *NE *BASE) THEN(DO)
+             CHGVAR     VAR(&SAVF) VALUE('Q' |< &LICPGM |< &OPTION)
+             CHGVAR     VAR(&IFSFILE) VALUE(&SAVTODIR |< '/' |< +
+                          &SAVF |< '.savf')
+             ENDDO
+
+             /* Create the save file in QTEMP */
+             CRTSAVF    FILE(QTEMP/&SAVF) TEXT(&LICPGM |> 'option:' +
+                          |> &OPTION)
+             MONMSG     MSGID(CPF0000)
+             /* Clear it */
+             CLRSAVF    FILE(QTEMP/&SAVF)
+
+             /* Save the licensed program option */
+             SAVLICPGM  LICPGM(&LICPGM) DEV(*SAVF) OPTION(&OPTION) +
+                          RLS(*ONLY) LNG(*PRIMARY) OBJTYPE(*ALL) +
+                          CHKSIG(*SIGNED) SAVF(QTEMP/&SAVF) +
+                          TGTRLS(*CURRENT) CLEAR(*NONE) +
+                          DTACPR(*HIGH) LICACPRQD(*NO)
+
+             /* Copy savf to IFS */
+             CPYTOSTMF  FROMMBR('/QSYS.LIB/QTEMP.LIB/' |< &SAVF +
+                          |< '.FILE') TOSTMF(&IFSFILE) +
+                          STMFOPT(*REPLACE) CVTDTA(*NONE)
+
+             CHGVAR     VAR(&MSG) VALUE('Lic program:' |> &LICPGM |> +
+                          'option:' |> &OPTION |> 'saved to' |> +
+                          &IFSFILE)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&MSG) +
+                          MSGTYPE(*COMP)
+             RETURN
+
+ERRORS:
+             CHGVAR     VAR(&MSG) VALUE('Errors saving licensed +
+                          program option. Check the job log')
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&MSG) +
+                          MSGTYPE(*ESCAPE)
+
+             ENDPGM
