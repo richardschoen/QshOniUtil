@@ -6,20 +6,26 @@ QShell on i Library
 https://www.github.com/richardschoen/qshoni  
 
 ## Commands
-```SAVLICPGS```- Save selected licensed program option to an IFS based save file via SAVELICPGM.  
+```SAVLICPGS```- Save selected licensed program option to an IFS based save file via SAVLICPGM CL command.
 
-The output IFS directory is automatically created. And the save file name in the IFS mirrors the licensed program and option. 
+### Parameters
+Licensed program.
+
+Licensed program option
+
+Output saved file directory. 
+
+The specified output IFS directory is automatically created. And the save file name in the IFS mirrors the licensed program and option selected. 
 
 Ex: Q5770ST1BS.savf - This is licensed program 5770ST1 base option.
 
 Ex: Q5770SS15.savf - This is licensed program 5770SS1 option 5.
 
-**The save file name is derived automatically based on the licensed program and option you selected.
-
+**The save file name is derived automatically based on the licensed program and option you selected.**
 
 ```RSTLICPGS```- Restore selected licensed program option from an IFS based save file via RSTLICPGM. 
 
-You need to specify the following parms:
+### Parameters
 Licensed program.
 
 Licensed program option
