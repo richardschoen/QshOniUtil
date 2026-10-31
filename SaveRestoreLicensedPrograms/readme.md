@@ -1,10 +1,11 @@
 # Save/Restore Licensed Programs to IFS Save File
 This utility can be used to save and restore a licensed program to an IFS based save file. This makes copying licensed programs between IBM i partitions easier.
 
-Prerequisite: QShell on i Library    
+## Prerequisites
+QShell on i Library    
 https://www.github.com/richardschoen/qshoni  
 
-Commands:
+## Commands
 ```SAVLICPGS```- Save selected licensed program option to an IFS based save file via SAVELICPGM.  
 
 The output IFS directory is automatically created. And the save file name in the IFS mirrors the licensed program and option. 
