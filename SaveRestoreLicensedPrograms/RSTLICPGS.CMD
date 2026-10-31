@@ -1,4 +1,4 @@
-/* Desc: Save Licensed Program to IFS Save File */
+/* Desc: Restore Licensed Program from IFS Save File */
              CMD        PROMPT('Restore Licensed Pgm from SAVF')
              PARM       KWD(LICPGM) TYPE(*CHAR) LEN(7) +
                           PROMPT('Licensed program')

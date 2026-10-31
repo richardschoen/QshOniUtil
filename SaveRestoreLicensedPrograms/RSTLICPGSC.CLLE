@@ -1,5 +1,4 @@
-/* Desc: Save Licensed Program to IFS Save File */
-
+/* Desc: Restore Licensed Program from IFS Save File */
              PGM        PARM(&LICPGM &OPTION &RSTFROMDIR)
 
              DCL        VAR(&LICPGM) TYPE(*CHAR) LEN(7)
